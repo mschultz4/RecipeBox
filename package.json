@@ -9,6 +9,13 @@
   "author": "Matt Schultz",
   "license": "ISC",
   "dependencies": {
+    "browser": "^0.2.6",
     "lodash": "^4.14.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-eslint": "^3.0.1",
+    "reactify": "^1.1.1"
   }
 }
