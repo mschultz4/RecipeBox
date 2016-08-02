@@ -17,7 +17,7 @@ function recipeBox() {
         }
     })();
 
-    var RecipeBox = React.createClass({ 
+    var RecipeBox = React.createClass({displayName: "RecipeBox", 
         getInitialState: function () {
             var recipes = localStorage.getItem('recipes');
             return JSON.parse(recipes);
@@ -37,27 +37,27 @@ function recipeBox() {
         render: function render() {
             var listItems = Object.keys(this.state).map(function (key) {
                 if (!this.state[key].deleted) {
-                    return (<Recipe
-                        key={key}
-                        recipe={this.state[key]}
-                        onDelete={this.handleDelete}
-                        onEdit={this.handleEdit}/>);
+                    return (React.createElement(Recipe, {
+                        key: key, 
+                        recipe: this.state[key], 
+                        onDelete: this.handleDelete, 
+                        onEdit: this.handleEdit}));
                 }
             }, this);
 
             return (
-                <div>
-                    <Form
-                        onRecipeSubmit={this.handleRecipeSubmit}
+                React.createElement("div", null, 
+                    React.createElement(Form, {
+                        onRecipeSubmit: this.handleRecipeSubmit}
                        // editRecipe={}
-                       />
-                    <ul>{listItems}</ul>
-                </div>
+                       ), 
+                    React.createElement("ul", null, listItems)
+                )
             );
         }
     });
 
-    var Form = React.createClass({
+    var Form = React.createClass({displayName: "Form",
         getInitialState: function () {
             return { name: '', ingredients: [] };
         },
@@ -82,34 +82,34 @@ function recipeBox() {
         },
         render: function () {
             return (
-                <form onSubmit={this.handleSubmit}>
-                    <label htmlFor="name" >Name</label>
-                    <input
-                        id="name"
-                        type="text"
-                        onChange={this.handleNameInput}
-                        value={this.state.name}/  >
-                    <label htmlFor="ingredients" >Ingredients</label>
-                    <input
-                        id="ingredients"
-                        type="text"
-                        onChange={this.handleIngredientInput}
-                        value={this.state.ingredients}/  >
-                    <button className="btn btn-default" >Submit</button>
-                </form>
+                React.createElement("form", {onSubmit: this.handleSubmit}, 
+                    React.createElement("label", {htmlFor: "name"}, "Name"), 
+                    React.createElement("input", {
+                        id: "name", 
+                        type: "text", 
+                        onChange: this.handleNameInput, 
+                        value: this.state.name}/ ), 
+                    React.createElement("label", {htmlFor: "ingredients"}, "Ingredients"), 
+                    React.createElement("input", {
+                        id: "ingredients", 
+                        type: "text", 
+                        onChange: this.handleIngredientInput, 
+                        value: this.state.ingredients}/ ), 
+                    React.createElement("button", {className: "btn btn-default"}, "Submit")
+                )
             );
         }
     });
 
-    var Recipe = React.createClass({
+    var Recipe = React.createClass({displayName: "Recipe",
         render: function () {
             return (
-                <li key={this.props.recipe.name}>
-                    <span>{this.props.recipe.name}</span>
-                    <Ingredients ingredients={this.props.recipe.ingredients}/>
-                    <button onClick={this.handleDelete}>delete </button>
-                    <button onClick={this.handleEdit}>Edit</button>
-                </li>
+                React.createElement("li", {key: this.props.recipe.name}, 
+                    React.createElement("span", null, this.props.recipe.name), 
+                    React.createElement(Ingredients, {ingredients: this.props.recipe.ingredients}), 
+                    React.createElement("button", {onClick: this.handleDelete}, "delete "), 
+                    React.createElement("button", {onClick: this.handleEdit}, "Edit")
+                )
             );
         },
         handleDelete: function () {
@@ -120,22 +120,22 @@ function recipeBox() {
         }
     });
 
-    var Ingredients = React.createClass({
+    var Ingredients = React.createClass({displayName: "Ingredients",
         render: function render() {
             var listItems = this.props.ingredients.replace(/\s/g, '').split(',').map(function (ingredient) {
                 return (
-                    <li key={ingredient}>
-                        {ingredient}
-                    </li>
+                    React.createElement("li", {key: ingredient}, 
+                        ingredient
+                    )
                 );
             }, this);
 
-            return (<ul>{listItems}</ul>);
+            return (React.createElement("ul", null, listItems));
         }
     });
 
 
-    React.render(<RecipeBox/>, document.getElementById('recipes'));
+    React.render(React.createElement(RecipeBox, null), document.getElementById('recipes'));
 }
 
 module.exports = recipeBox;
