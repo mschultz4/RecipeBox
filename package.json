@@ -2,16 +2,19 @@
   "name": "recipebox",
   "version": "1.0.0",
   "description": "recipe box project for codecamp",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-js": "browserify -t [reactify] ./src/app.js  > ./dist/bundle.js"
   },
   "author": "Matt Schultz",
   "license": "ISC",
   "dependencies": {
     "browser": "^0.2.6",
     "eslint": "^3.2.2",
+    "express": "^4.14.0",
     "lodash": "^4.14.1",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0",
     "vinyl-transform": "^1.0.0"
   },
   "devDependencies": {
@@ -23,6 +26,7 @@
     "reactify": "^1.1.1",
     "streamify": "^0.2.6",
     "uglify": "^0.1.5",
+    "uglify-js": "^2.7.0",
     "vinyl-source-stream": "^1.1.0"
   }
 }

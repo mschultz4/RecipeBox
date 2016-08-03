@@ -88,14 +88,14 @@ function recipeBox() {
                         id="name"
                         type="text"
                         onChange={this.handleNameInput}
-                        value={this.state.name}/  >
-                    <label htmlFor="ingredients" >Ingredients</label>
+                        value={this.state.name}/>
+                    <label htmlFor="ingredients">Ingredients</label>
                     <input
                         id="ingredients"
                         type="text"
                         onChange={this.handleIngredientInput}
-                        value={this.state.ingredients}/  >
-                    <button className="btn btn-default" >Submit</button>
+                        value={this.state.ingredients}/>
+                    <button className="btn btn-default">Submit</button>
                 </form>
             );
         }
@@ -136,6 +136,8 @@ function recipeBox() {
 
 
     React.render(<RecipeBox/>, document.getElementById('recipes'));
+    console.log('dough');
 }
 
 module.exports = recipeBox;
+recipeBox();
