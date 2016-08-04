@@ -4,7 +4,9 @@
   "description": "recipe box project for codecamp",
   "main": "server.js",
   "scripts": {
-    "build-js": "browserify -t [reactify] ./src/app.js  > ./dist/bundle.js"
+    "start": "browserify -t [reactify] ./src/app.js  > ./dist/bundle.js",
+    "build": "browserify -t [reactify] | uglifyjs -cm > ./dist/bundle.min.js",
+    "clean": "esformatter ./src/**/*.js"
   },
   "author": "Matt Schultz",
   "license": "ISC",
@@ -19,6 +21,7 @@
   },
   "devDependencies": {
     "browserify": "^13.1.0",
+    "esformatter": "^0.9.6",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
     "gulp-eslint": "^3.0.1",
