@@ -1,6 +1,6 @@
-var Dispatcher = require('../dispatcher/appDispatcher');
+var Dispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('events').EventEmitter;
-var Constants = require('../constants/recipeContants.js');
+var Constants = require('../constants/RecipeContants.js');
 var Assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
