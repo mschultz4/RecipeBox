@@ -4,6 +4,7 @@ var React = require('react');
 var _ = require('lodash');
 var Form = require('./form.js');
 var Recipe = require('./recipe.js');
+var Store = require('../stores/RecipeStore.js');
 
 var RecipeBox = React.createClass({
     getInitialState: function() {

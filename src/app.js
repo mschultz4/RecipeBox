@@ -1,27 +1,11 @@
 /*global localStorage*/
 var ReactDOM = require('react-dom');
+var RecipeBox = require('./components/recipeBox.js');
+var ExampleData = require('./ExampleData.js');
 
 "use strict";
 
-// if no recipes in storage, set up example data
-(function() {
-  var defaultRecipes = {
-    'pasta': {
-      name: 'pasta',
-      'ingredients': 'flour, water, salt',
-      deleted: false
-    },
-    'cookie': {
-      name: 'cookie',
-      'ingredients': 'flour, water, sugar',
-      deleted: false
-    }
-  };
-
-  if (!localStorage.getItem('recipes')) {
-    localStorage.setItem('recipes', JSON.stringify(defaultRecipes));
-  }
-})();
+ExampleData.init();
 
 
 ReactDOM.render(<RecipeBox/>, document.getElementById('recipes'));
