@@ -6,7 +6,7 @@
   "scripts": {
     "start": "browserify -t [reactify] ./src/app.js  > ./dist/bundle.js",
     "build": "browserify -t [reactify] | uglifyjs -cm > ./dist/bundle.min.js",
-    "clean": "esformatter ./src/**/*.js"
+    "clean": "esformatter -i './src/**/*.js'"
   },
   "author": "Matt Schultz",
   "license": "ISC",
@@ -14,7 +14,10 @@
     "browser": "^0.2.6",
     "eslint": "^3.2.2",
     "express": "^4.14.0",
+    "flux": "^2.1.1",
+    "keymirror": "^0.1.1",
     "lodash": "^4.14.1",
+    "object-assign": "^4.1.0",
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
     "vinyl-transform": "^1.0.0"
