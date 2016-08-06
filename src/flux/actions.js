@@ -9,6 +9,14 @@ var actions = {
             type: Constants.RECIEVE_RECIPES,
             recipes: recipes
         });
+    },
+    destroy: function(id){
+        WebAPIUtils.destroyRecipe(id);
+        Dispatcher.dispatch({
+            type = Constants.RECIPE_DESTROY,
+            id = id
+        });
+
     }
 };
 
