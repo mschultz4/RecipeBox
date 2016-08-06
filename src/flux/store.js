@@ -62,6 +62,10 @@ Dispatcher.register(function(action){
             update(action.id, {name: name, ingredients: ingredients});
             this.emitChange();
             break;
+        case Constants.RECEIVE_RECIPES:
+            receiveAllRecipes(action.recipes);
+            this.emitChange();
+            break;
         default:
         //do nothing
     }
@@ -92,11 +96,19 @@ function destroy(id){
 
 /**
  * Update an existing recipe
- * @param {id} string
+ * @param {string} id
  * @param {object} updates An object literal containing only updates
  */
  function update(id, updates){
      _recipes[id] = Assign({}, _recipes[id], updates);
+ }
+
+/**
+ * Receive all recipes from storage
+ * @param {array} recipes An array of recipe objects
+ */
+ function receiveAllRecipes(recipes){
+     _recipes = recipes;
  }
  
 

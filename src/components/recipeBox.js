@@ -4,12 +4,27 @@ var React = require('react');
 var _ = require('lodash');
 var Form = require('./form.js');
 var Recipe = require('./recipe.js');
-var Store = require('../stores/RecipeStore.js');
+var Store = require('../flux/store.js');
+
+/**
+ * Retrieve all recipe data from the Store
+ */
+function getState() {
+  return {
+    allTodos: Store.getAll()
+  };
+}
+
 
 var RecipeBox = React.createClass({
     getInitialState: function() {
-        var recipes = localStorage.getItem('recipes');
-        return JSON.parse(recipes);
+        return getState();
+    },
+    componentDidMount: function(){
+        Store.addChangeListener(this._onStateChange);
+    },
+    componentWillUnmount: function(){
+        Store.removeChangeListener(this._onStateChange);
     },
     handleRecipeSubmit: function(recipe) {
 
@@ -48,6 +63,9 @@ var RecipeBox = React.createClass({
                 <ul>{listItems}</ul>
             </div>
         );
+    },
+    _onStateChange: function(){
+        this.setState(getState());
     }
 });
 

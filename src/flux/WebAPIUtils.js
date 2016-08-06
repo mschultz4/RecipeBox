@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
 var dataAccessLayer = {
-    getRecipes: function() {
+    getAllRecipes: function() {
         return JSON.parse(window.localStorage.getItem('recipes'));
     },
     updateRecipe: function(recipe){
