@@ -7,7 +7,7 @@ var CHANGE_EVENT = 'change';
 
 //bootstrap storage if none exists
   
-var _recipes = {};
+var _recipes = [];
  
 var recipeStore = Assign({}, EventEmitter.prototype,{
     /**
@@ -39,15 +39,17 @@ var recipeStore = Assign({}, EventEmitter.prototype,{
 }); 
 
 var name,
-    ingredients;
+    ingredients,
+    id;
 
 //Register the store
 Dispatcher.register(function(action){
-    switch(action){
+    switch(action.type){
         case Constants.RECIPE_CREATE:
             name = action.name.trim();
             ingredients = action.ingredients.trim();
-            create(name, ingredients);
+            id = action.id;
+            create(id, name, ingredients);
             this.emitChange();
             break;
         
@@ -64,7 +66,7 @@ Dispatcher.register(function(action){
             break;
         case Constants.RECEIVE_RECIPES:
             receiveAllRecipes(action.recipes);
-            this.emitChange();
+            recipeStore.emitChange();
             break;
         default:
         //do nothing
@@ -73,17 +75,16 @@ Dispatcher.register(function(action){
 
 /**
  * Create a new recipe
- * @param {string} name The recipe name
- * @param (string) ingredients The comma delmited list of ingredients
+ * @param {num} id 
+ * @param {string} name
+ * @param {string} ingredients
  */
-function create(name, ingredients) {
-    var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
-    _recipes[id] = {
+function create(id, name, ingredients) {
+    _recipes.push({
         id: id,
-        complete: false,
         name: name,
         ingredients: ingredients
-    };
+    });
 }
 
 /**
@@ -108,6 +109,7 @@ function destroy(id){
  * @param {array} recipes An array of recipe objects
  */
  function receiveAllRecipes(recipes){
+     console.log(recipes);
      _recipes = recipes;
  }
  

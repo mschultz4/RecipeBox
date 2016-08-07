@@ -4,8 +4,9 @@
   "description": "recipe box project for codecamp",
   "main": "server.js",
   "scripts": {
-    "start": "browserify -t [reactify] ./src/app.js  > ./dist/bundle.js",
+    "start": "browserify -d -t [reactify] ./src/app.js  > ./dist/bundle.js",
     "build": "browserify -t [reactify] | uglifyjs -cm > ./dist/bundle.min.js",
+    "watch": "watchify -d -t [reactify] ./src/app.js  -o ./dist/bundle.js",
     "clean": "esformatter -i './src/**/*.js'"
   },
   "author": "Matt Schultz",
