@@ -10,14 +10,15 @@ var actions = {
             recipes: recipes
         });
     },
-    destroy: function(id){
+    destroyRecipe: function(id){
         WebAPIUtils.destroyRecipe(id);
         Dispatcher.dispatch({
             type = Constants.RECIPE_DESTROY,
             id = id
         });
 
-    }
+    },
+    createRecipe: 
 };
 
 module.exports = actions; 

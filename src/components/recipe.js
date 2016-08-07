@@ -29,13 +29,13 @@ var Recipe = React.createClass({
         );
     },
     _onDelete: function() {
-        Actions.destroy(this.props.recipe.id);
+        Actions.destroyRecipe(this.props.recipe.id);
     },
     _onEdit: function() {
         this.setState({isEditing: true});
     },
     _onSave: function(){
-        
+        Actions.createRecipe(this.props.recipe);
     }
 });
 
