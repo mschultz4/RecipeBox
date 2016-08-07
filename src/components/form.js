@@ -3,8 +3,8 @@ var React = require('react');
 var Form = React.createClass({
   getInitialState: function() {
     return {
-      name: '',
-      ingredients: ''
+      name: this.props.recipe.name, 
+      ingredients: this.props.recipe.ingredients 
     };
   },
   render: function() {
@@ -29,14 +29,14 @@ var Form = React.createClass({
   _onIngredientInput: function(e) {
     if (typeof e.target.value === 'string') {
       this.setState({
-        ingredients: e.target.value.trim()
+        ingredients: e.target.value
       });
     }
   },
   _onNameInput: function(e) {
     if (typeof e.target.value === 'string') {
       this.setState({
-        name: e.target.value.trim()
+        name: e.target.value
       });
     }
   },

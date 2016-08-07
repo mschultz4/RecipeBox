@@ -6,6 +6,7 @@ var Assign = require('object-assign');
 var actions = {
     receiveAllRecipes: function() {
         var recipes = WebAPIUtils.getAllRecipes();
+        console.log(recipes);
         Dispatcher.dispatch({
             type: Constants.RECEIVE_RECIPES,
             recipes: recipes
@@ -24,6 +25,10 @@ var actions = {
         Dispatcher.dispatch(Assign({}, newRecipe, {
             type: Constants.RECIPE_CREATE
         }));
+    },
+    updateRecipe: function(recipe){
+        WebAPIUtils.updateRecipe(recipe);
+        Dispatcher.dispatch(Assign({}, recipe, {type: Constants.RECIPE_UPDATE}));
     }
 };
 

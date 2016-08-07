@@ -12,16 +12,16 @@ var Recipe = React.createClass({
         var editing = '';
         if(this.state.isEditing){
             editing = 'editing';
-            form = (<Form onSave = {this._onSave}
+            form = (<Form onRecipeSubmit = {this._onSave}
                     recipe = {this.props.recipe}/>);
         }
         
         return (
-            <li key={this.props.recipe.id}>
-                className = {editing}
+            <li key={this.props.recipe.id}
+                className = {editing}>
                     <span>{this.props.recipe.name}</span>
                     <Ingredients ingredients={this.props.recipe.ingredients}/>
-                    <button onClick={this._onDelete}>delete </button>
+                    <button onClick={this._onDelete}>delete</button>
                     <button onClick={this._onEdit}>Edit</button>
                     {form}
             </li>
@@ -34,7 +34,7 @@ var Recipe = React.createClass({
         this.setState({isEditing: true});
     },
     _onSave: function(){
-        Actions.createRecipe(this.props.recipe);
+        Actions.updateRecipe(this.props.recipe);
     }
 });
 

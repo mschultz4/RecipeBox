@@ -25,6 +25,7 @@ var RecipeBox = React.createClass({
         Store.removeChangeListener(this._onStateChange);
     },
     render: function render() {
+        var newRecipe = {name:'', ingredients: ''};
         var listItems = this.state.recipes.map(function(recipe) {           
                 return (
                     <Recipe
@@ -36,7 +37,7 @@ var RecipeBox = React.createClass({
             <div>
                 <Form
                   onRecipeSubmit={this._onSubmit}
-                  // editRecipe={}
+                  recipe={newRecipe}
                  />
                 <ul>{listItems}</ul>
             </div>

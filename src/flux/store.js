@@ -2,6 +2,7 @@ var Dispatcher = require('./dispatcher.js');
 var EventEmitter = require('events').EventEmitter;
 var Constants = require('./constants.js');
 var Assign = require('object-assign');
+var _ = require('lodash');
 
 var CHANGE_EVENT = 'change';
 
@@ -50,20 +51,21 @@ Dispatcher.register(function(action){
             ingredients = action.ingredients.trim();
             id = action.id;
             create(id, name, ingredients);
-            this.emitChange();
+            recipeStore.emitChange();
             break;
         
         case Constants.RECIPE_DESTROY:
            destroy(action.id);
-           this.emitChange();
+           recipeStore.emitChange();
            break;
            
         case Constants.RECIPE_UPDATE:
             name = action.name;
             ingredients = action.ingredients;
             update(action.id, {name: name, ingredients: ingredients});
-            this.emitChange();
+            recipeStore.emitChange();
             break;
+            
         case Constants.RECEIVE_RECIPES:
             receiveAllRecipes(action.recipes);
             recipeStore.emitChange();
@@ -92,7 +94,11 @@ function create(id, name, ingredients) {
  * @param {string} id
  */
 function destroy(id){
-    delete _recipes[id];
+   var index = _.findIndex(_recipes, function(o){
+       return o.id == id;
+   }); 
+     _recipes.splice(index, 1);
+     
 }
 
 /**
@@ -100,8 +106,11 @@ function destroy(id){
  * @param {string} id
  * @param {object} updates An object literal containing only updates
  */
- function update(id, updates){
-     _recipes[id] = Assign({}, _recipes[id], updates);
+ function update(recipe){
+     var index = _.findIndex(_recipes, function(o){
+         return o.id === recipe.id;
+     });
+     _recipes[index] = Assign({}, _recipes[index], recipe);
  }
 
 /**
@@ -109,7 +118,6 @@ function destroy(id){
  * @param {array} recipes An array of recipe objects
  */
  function receiveAllRecipes(recipes){
-     console.log(recipes);
      _recipes = recipes;
  }
  
