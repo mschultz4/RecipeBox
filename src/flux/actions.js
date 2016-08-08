@@ -28,7 +28,7 @@ var actions = {
     },
     updateRecipe: function(recipe){
         WebAPIUtils.updateRecipe(recipe);
-        Dispatcher.dispatch(Assign({}, recipe, {type: Constants.RECIPE_UPDATE}));
+        Dispatcher.dispatch(Assign({}, {recipe: recipe}, {type: Constants.RECIPE_UPDATE}));
     }
 };
 
