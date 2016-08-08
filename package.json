@@ -12,6 +12,7 @@
   "author": "Matt Schultz",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "^3.3.7",
     "browser": "^0.2.6",
     "eslint": "^3.2.2",
     "express": "^4.14.0",
