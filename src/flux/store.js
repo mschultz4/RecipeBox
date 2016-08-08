@@ -60,9 +60,7 @@ Dispatcher.register(function(action){
            break;
            
         case Constants.RECIPE_UPDATE:
-            name = action.name;
-            ingredients = action.ingredients;
-            update(action.id, {name: name, ingredients: ingredients});
+            update(action.recipe);
             recipeStore.emitChange();
             break;
             
