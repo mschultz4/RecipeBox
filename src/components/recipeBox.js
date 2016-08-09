@@ -39,8 +39,8 @@ var RecipeBox = React.createClass({
                     Add Recipe
                 </button>
                 <Form
-                  onRecipeSubmit={this._onSubmit}
-                  recipe={newRecipe}
+                    onRecipeSubmit={this._onSubmit}
+                    recipe={newRecipe}
                  />
                 <ul>{listItems}</ul>
             </div>

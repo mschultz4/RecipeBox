@@ -15,8 +15,7 @@ var Recipe = React.createClass({
         var editing = '';
         if (this.state.isEditing) {
             editing = 'editing';
-            form = (<Form onRecipeSubmit = {this._onSave}
-                    recipe = {this.props.recipe}/>);
+            //form = ();
         }
 
         return (
@@ -27,11 +26,13 @@ var Recipe = React.createClass({
                     <button className="btn btn-default"
                         onClick={this._onEdit} 
                         data-toggle="modal" 
-                        data-target="#myModal">
+                        data-target="#myModal"
+                        type="button">
                         Edit
                     </button>
-                    <button className="btn btn-warning" onClick={this._onDelete}>delete</button>
-                    {form}
+                    <button className="btn btn-danger" onClick={this._onDelete}>delete</button>
+                   <Form id="editForm" onRecipeSubmit = {this._onSave}
+                    recipe = {this.props.recipe}/>
             </li>
         );
     },
