@@ -35,12 +35,9 @@ var RecipeBox = React.createClass({
 
         return (
             <div>
-                <button type="button" className="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-                    Add Recipe
-                </button>
                 <Form
-                    onRecipeSubmit={this._onSubmit}
-                    recipe={newRecipe}
+                  onRecipeSubmit={this._onSubmit}
+                  recipe={newRecipe}
                  />
                 <ul>{listItems}</ul>
             </div>
