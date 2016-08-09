@@ -24,8 +24,13 @@ var Recipe = React.createClass({
                 className = {editing}>
                     <span>{this.props.recipe.name}</span>
                     <Ingredients ingredients={this.props.recipe.ingredients}/>
-                    <button onClick={this._onDelete}>delete</button>
-                    <button onClick={this._onEdit}>Edit</button>
+                    <button className="btn btn-default"
+                        onClick={this._onEdit} 
+                        data-toggle="modal" 
+                        data-target="#myModal">
+                        Edit
+                    </button>
+                    <button className="btn btn-warning" onClick={this._onDelete}>delete</button>
                     {form}
             </li>
         );

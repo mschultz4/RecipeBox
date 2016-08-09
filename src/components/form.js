@@ -1,29 +1,34 @@
 var React = require('react');
-
 var Form = React.createClass({
   getInitialState: function() {
     return {
-      name: this.props.recipe.name, 
-      ingredients: this.props.recipe.ingredients 
+      name: this.props.recipe.name,
+      ingredients: this.props.recipe.ingredients
     };
   },
   render: function() {
     return (
-      <form onSubmit={this._onSubmit}>
-        <label htmlFor="name" >Name</label>
-        <input
-          id="name"
-          type="text"
-          onChange={this._onNameInput}
-          value={this.state.name}/>
-        <label htmlFor="ingredients">Ingredients</label>
-        <input
-          id="ingredients"
-          type="text"
-          onChange={this._onIngredientInput}
-          value={this.state.ingredients}/>
-        <button className="btn btn-default">Submit</button>
-      </form>
+      <div className="modal fade" id="myModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h4 className="modal-title" id="myModalLabel">Recipe</h4>
+            </div>
+              <form onSubmit={this._onSubmit}>
+            <div className="modal-body" className='form-group'>
+                <label htmlFor="name">Name</label>
+                <input id="name" className="form-control" type="text" onChange={this._onNameInput} value={this.state.name}/>
+                <label htmlFor="ingredients">Ingredients</label>
+                <input id="ingredients" className="form-control" type="text" onChange={this._onIngredientInput} value={this.state.ingredients}/>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" action="submit" className="btn btn-primary">Save</button>
+            </div>
+              </form>
+          </div>
+        </div>
+      </div>
     );
   },
   _onIngredientInput: function(e) {
@@ -44,11 +49,9 @@ var Form = React.createClass({
     e.preventDefault();
     var name = this.state.name;
     var ingredients = this.state.ingredients;
-    
     if (!name || !ingredients) {
       return;
     }
-
     this.props.onRecipeSubmit({
       name: name,
       ingredients: ingredients
@@ -59,5 +62,4 @@ var Form = React.createClass({
     });
   }
 });
-
 module.exports = Form;
