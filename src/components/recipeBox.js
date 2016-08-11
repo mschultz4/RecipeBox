@@ -5,31 +5,27 @@ var Store = require('../flux/store.js');
 var Actions = require('../flux/actions.js');
 var Button = require('react-bootstrap').button;
 
-/**
- * Retrieve all recipe data from the Store
- */
-function getState() {
-  return {
-    recipes: Store.getAll()
-  };
-}
-
-
 var RecipeBox = React.createClass({
     getInitialState: function() {
-        return  getState();
+        return {
+            showModal: false,
+            recipes: getRecipes()
+        };
     },
-    componentDidMount: function(){
+    componentDidMount: function() {
         Store.addChangeListener(this._onStateChange);
     },
-    componentWillUnmount: function(){
+    componentWillUnmount: function() {
         Store.removeChangeListener(this._onStateChange);
     },
     render: function render() {
-        var newRecipe = {name:'', ingredients: ''};
-        var listItems = this.state.recipes.map(function(recipe) {           
-                return (
-                    <Recipe
+        var newRecipe = {
+            name: '',
+            ingredients: ''
+        };
+        var listItems = this.state.recipes.map(function(recipe) {
+            return (
+                <Recipe
                         key={recipe.id}
                         recipe={recipe}
                     />);
@@ -40,20 +36,44 @@ var RecipeBox = React.createClass({
                 <Form
                   onRecipeSubmit={this._onSubmit}
                   recipe={newRecipe}
+                  showModal={this.state.showModal}
+                  onHide={this._closeModal}
                  />
                 <ul>{listItems}</ul>
                 <Button
+                    bsStyle="primary"
+                    onClick={this.openModal}
                 />
             </div>
         );
     },
-    _onStateChange: function(){
-        this.setState(getState());
+    _onStateChange: function() {
+        this.setState({
+            recipes: getRecipes()
+        });
     },
-    _onSubmit: function(recipe){
+    _onSubmit: function(recipe) {
         Actions.createRecipe(recipe);
         this.setState({});
+    },
+    _openModal: function() {
+        this.setState({
+            showModal: true
+        });
+    },
+    _closeModal: function() {
+        this.setState({
+            showModal: false
+        });
     }
 });
+
+/**
+ * Retrieve all recipe data from the Store
+ * @returns {array} an array of recipe objects
+ */
+function getRecipes() {
+    return Store.getAll();
+}
 
 module.exports = RecipeBox;

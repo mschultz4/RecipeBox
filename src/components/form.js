@@ -1,30 +1,34 @@
 var React = require('react');
+var Modal = require('react-bootstrap').modal;
+var Button = require('react-bootstrap').button;
 
 var Form = React.createClass({
   getInitialState: function() {
     return {
       name: this.props.recipe.name, 
       ingredients: this.props.recipe.ingredients,
-      showModal: false
+      showModal: this.props.showModal
     };
   },
   render: function() {
     return (
-      <form onSubmit={this._onSubmit}>
-        <label htmlFor="name" >Name</label>
-        <input
-          id="name"
-          type="text"
-          onChange={this._onNameInput}
-          value={this.state.name}/>
-        <label htmlFor="ingredients">Ingredients</label>
-        <input
-          id="ingredients"
-          type="text"
-          onChange={this._onIngredientInput}
-          value={this.state.ingredients}/>
-        <button className="btn btn-default">Submit</button>
-      </form>
+      <Modal show={this.state.showModal} onHide={false}>
+        <form onSubmit={this._onSubmit}>
+          <label htmlFor="name" >Name</label>
+          <input
+            id="name"
+            type="text"
+            onChange={this._onNameInput}
+            value={this.state.name}/>
+          <label htmlFor="ingredients">Ingredients</label>
+          <input
+            id="ingredients"
+            type="text"
+            onChange={this._onIngredientInput}
+            value={this.state.ingredients}/>
+          <button className="btn btn-default">Submit</button>
+        </form>
+      </Modal>
     );
   },
   _onIngredientInput: function(e) {
