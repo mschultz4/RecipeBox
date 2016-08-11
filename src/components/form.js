@@ -4,7 +4,8 @@ var Form = React.createClass({
   getInitialState: function() {
     return {
       name: this.props.recipe.name, 
-      ingredients: this.props.recipe.ingredients 
+      ingredients: this.props.recipe.ingredients,
+      showModal: false
     };
   },
   render: function() {

@@ -3,6 +3,7 @@ var Form = require('./form.js');
 var Recipe = require('./recipe.js');
 var Store = require('../flux/store.js');
 var Actions = require('../flux/actions.js');
+var Button = require('react-bootstrap').button;
 
 /**
  * Retrieve all recipe data from the Store
@@ -30,7 +31,8 @@ var RecipeBox = React.createClass({
                 return (
                     <Recipe
                         key={recipe.id}
-                        recipe={recipe}/>);
+                        recipe={recipe}
+                    />);
         });
 
         return (
@@ -40,6 +42,8 @@ var RecipeBox = React.createClass({
                   recipe={newRecipe}
                  />
                 <ul>{listItems}</ul>
+                <Button
+                />
             </div>
         );
     },
