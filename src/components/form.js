@@ -1,6 +1,6 @@
 var React = require('react');
-var Modal = require('react-bootstrap').modal;
-var Button = require('react-bootstrap').button;
+var Modal = require('react-bootstrap').Modal;
+var Button = require('react-bootstrap').Button;
 
 var Form = React.createClass({
   getInitialState: function() {
@@ -12,7 +12,6 @@ var Form = React.createClass({
   },
   render: function() {
     return (
-      <Modal show={this.state.showModal} onHide={false}>
         <form onSubmit={this._onSubmit}>
           <label htmlFor="name" >Name</label>
           <input
@@ -28,7 +27,6 @@ var Form = React.createClass({
             value={this.state.ingredients}/>
           <button className="btn btn-default">Submit</button>
         </form>
-      </Modal>
     );
   },
   _onIngredientInput: function(e) {
