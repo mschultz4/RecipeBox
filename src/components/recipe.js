@@ -4,6 +4,7 @@ var Actions = require('../flux/actions.js');
 var Assign = require('object-assign');
 var Modal = require('./modal.js');
 var Button = require('react-bootstrap').Button;
+var ListGroupItem = require('react-bootstrap').ListGroupItem;
 
 var Recipe = React.createClass({
     getInitialState: function() {
@@ -13,8 +14,10 @@ var Recipe = React.createClass({
     },
     render: function() {
         return (
-            <li key={this.props.recipe.id}>
-                    <span>{this.props.recipe.name}</span>
+                <ListGroupItem
+                    header={this.props.recipe.name}
+                    key={this.props.recipe.id}
+                >
                     <Ingredients ingredients={this.props.recipe.ingredients}/>
                     <Button onClick={this._onDelete}>delete</Button>
                     <Button onClick={this._onEdit}>Edit</Button>
@@ -24,7 +27,7 @@ var Recipe = React.createClass({
                     hideModal={this._closeModal}
                     onSubmit={this._onSubmit}
                 />    
-            </li>
+                </ListGroupItem>
         );
     },
     _onDelete: function() {

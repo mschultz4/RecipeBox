@@ -1,10 +1,11 @@
 var React = require('react');
-var Form = require('./form.js');
 var Recipe = require('./recipe.js');
 var Store = require('../flux/store.js');
 var Actions = require('../flux/actions.js');
 var Button = require('react-bootstrap').Button;
 var Modal = require('./modal.js');
+var ListGroup = require('react-bootstrap').ListGroup;
+var Jumbotron = require('react-bootstrap').Jumbotron;
 
 var RecipeBox = React.createClass({
     getInitialState: function() {
@@ -33,21 +34,23 @@ var RecipeBox = React.createClass({
         });
 
         return (
-            <div className="jumbotron">
+            <Jumbotron>
                 <Modal 
                     recipe={newRecipe}
                     showModal={this.state.showModal}
                     hideModal={this._closeModal}
                     onSubmit={this._onSubmit}
                 />    
-                <ul>{listItems}</ul>
+                <ListGroup>
+                    {listItems}
+                </ListGroup>
                 <Button
                     bsStyle="primary"
                     onClick={this._openModal}
                 >
                 New Recipe
                 </Button>
-            </div>
+            </Jumbotron>
         );
     },
     _onStateChange: function() {
