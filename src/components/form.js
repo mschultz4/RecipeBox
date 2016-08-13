@@ -1,6 +1,8 @@
 var React = require('react');
-var Modal = require('react-bootstrap').Modal;
 var Button = require('react-bootstrap').Button;
+var FormGroup = require('react-bootstrap').FormGroup;
+var FormControl = require('react-bootstrap').FormControl;
+var ControlLabel = require('react-bootstrap').ControlLabel;
 
 var Form = React.createClass({
   getInitialState: function() {
@@ -13,19 +15,21 @@ var Form = React.createClass({
   render: function() {
     return (
         <form onSubmit={this._onSubmit}>
-          <label htmlFor="name" >Name</label>
-          <input
+          <FormGroup>
+          <ControlLabel htmlFor="name" >Name</ControlLabel>
+          <FormControl
             id="name"
             type="text"
             onChange={this._onNameInput}
             value={this.state.name}/>
-          <label htmlFor="ingredients">Ingredients</label>
-          <input
+          <ControlLabel htmlFor="ingredients">Ingredients</ControlLabel>
+          <FormControl
             id="ingredients"
             type="text"
             onChange={this._onIngredientInput}
             value={this.state.ingredients}/>
-          <button className="btn btn-default">Submit</button>
+          <Button type='submit'>Submit</Button>
+          </FormGroup>
         </form>
     );
   },

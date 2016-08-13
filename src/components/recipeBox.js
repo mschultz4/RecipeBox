@@ -4,12 +4,12 @@ var Recipe = require('./recipe.js');
 var Store = require('../flux/store.js');
 var Actions = require('../flux/actions.js');
 var Button = require('react-bootstrap').Button;
-var Modal = require('react-bootstrap').Modal;
+var Modal = require('./modal.js');
 
 var RecipeBox = React.createClass({
     getInitialState: function() {
         return {
-            showModal: true,
+            showModal: false,
             recipes: getRecipes()
         };
     },
@@ -34,23 +34,16 @@ var RecipeBox = React.createClass({
 
         return (
             <div className="jumbotron">
-            <Modal
-                  show={this.state.showModal}
-                  onHide={this._closeModal}
-                  showModal={this.state.showModal}
-            >
-            <Modal.Body>
-                <Form
-                  onRecipeSubmit={this._onSubmit}
-                  recipe={newRecipe}
-                 />
-                 </Modal.Body>
-            </Modal>
+                <Modal 
+                    recipe={newRecipe}
+                    showModal={this.state.showModal}
+                    hideModal={this._closeModal}
+                    onSubmit={this._onSubmit}
+                />    
                 <ul>{listItems}</ul>
                 <Button
                     bsStyle="primary"
                     onClick={this._openModal}
-                    bsSize='large'
                 >
                 New Recipe
                 </Button>
@@ -64,15 +57,14 @@ var RecipeBox = React.createClass({
     },
     _onSubmit: function(recipe) {
         Actions.createRecipe(recipe);
-        this.setState({});
+        this.setState({showModal: false});
     },
     _openModal: function() {
-        console.log('here');
         this.setState({
             showModal: true
         });
     },
-    _closeModal: function() {
+    _closeModal: function(){
         this.setState({
             showModal: false
         });

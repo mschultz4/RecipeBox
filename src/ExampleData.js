@@ -1,7 +1,8 @@
 module.exports = {
     init: function() {
-        var recipes;
-        if (JSON.parse(window.localStorage.getItem('recipes')).length > 0) {
+        var recipes,
+            savedRecipes = JSON.parse(window.localStorage.getItem('recipes'));
+        if (savedRecipes && savedRecipes.length > 0) {
             return;
         }
         recipes = JSON.stringify([{
