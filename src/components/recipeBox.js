@@ -35,6 +35,7 @@ var RecipeBox = React.createClass({
 
         return (
             <Jumbotron>
+                <h1>Recipe Box</h1>
                 <Modal 
                     recipe={newRecipe}
                     showModal={this.state.showModal}
