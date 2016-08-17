@@ -4,8 +4,8 @@
   "description": "recipe box project for codecamp",
   "main": "server.js",
   "scripts": {
-    "start": "browserify -d -t [reactify] ./src/app.js  > ./dist/bundle.js && node server.js",
-    "build": "browserify -t [reactify] | uglifyjs -cm > ./dist/bundle.min.js",
+    "start": "browserify -d -t [reactify] ./src/app.js --exclude react --exclude react-dom   > ./dist/bundle.js && node server.js",
+    "build": "browserify -t [reactify] ./src/app.js --exclude react --exclude react-dom | uglifyjs -cm > ./dist/bundle.min.js",
     "watch": "watchify -d -t [reactify] ./src/app.js  -o ./dist/bundle.js",
     "clean": "esformatter -i './src/**/*.js'"
   },
@@ -14,7 +14,6 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "browser": "^0.2.6",
-    "eslint": "^3.2.2",
     "express": "^4.14.0",
     "flux": "^2.1.1",
     "keymirror": "^0.1.1",
@@ -22,20 +21,12 @@
     "object-assign": "^4.1.0",
     "react": "^15.3.0",
     "react-bootstrap": "^0.30.2",
-    "react-dom": "^15.3.0",
-    "vinyl-transform": "^1.0.0"
+    "react-dom": "^15.3.0"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
-    "esformatter": "^0.9.6",
-    "gulp": "^3.9.1",
-    "gulp-browserify": "^0.5.1",
-    "gulp-eslint": "^3.0.1",
-    "gulp-react": "^3.1.0",
+    "eslint": "^3.2.2",
     "reactify": "^1.1.1",
-    "streamify": "^0.2.6",
-    "uglify": "^0.1.5",
-    "uglify-js": "^2.7.0",
-    "vinyl-source-stream": "^1.1.0"
+    "uglify-js": "^2.7.0"
   }
 }
