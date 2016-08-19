@@ -4,19 +4,14 @@
   "description": "recipe box project for codecamp",
   "main": "server.js",
   "scripts": {
-    "start": "browserify -d -t [reactify] ./src/app.js  > ./dist/bundle.js && node server.js",
-    "build-bundle": "browserify -t [reactify] -t [browserify-shim] ./src/app.js -x lodash | uglifyjs -cm > ./dist/bundle.min.js",
-    "build-libraries": "browserify -r react -r react-dom -r lodash uglifyjs -cm > ./dist/libs.min.js",
-    "build": "npm run build-bundle && npm run build-libraries",
+    "start": "node server.js",
+    "build": "webpack --devtool source-map",
+    "build-prod": "webpack --optimize-minimize",
     "watch": "watchify -d -t [reactify] ./src/app.js  -o ./dist/bundle.js",
     "clean": "esformatter -i './src/**/*.js'"
   },
   "author": "Matt Schultz",
   "license": "ISC",
-    "browserify": {
-    "transform": [ "browserify-shim" ]
-  },
-  "browserify-shim": { "react": "global:React", "react-dom": "global:ReactDOM", "lodash": "global:_"},
   "dependencies": {
     "bootstrap": "^3.3.7",
     "browser": "^0.2.6",
@@ -30,10 +25,12 @@
     "react-dom": "^15.3.0"
   },
   "devDependencies": {
-    "browserify": "^13.1.0",
-    "browserify-shim": "^3.8.12",
+    "babel-core": "^6.13.2",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.11.1",
     "eslint": "^3.2.2",
     "reactify": "^1.1.1",
-    "uglify-js": "^2.7.0"
+    "webpack": "^1.13.2"
   }
 }
