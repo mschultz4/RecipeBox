@@ -4,16 +4,19 @@
   "description": "recipe box project for codecamp",
   "main": "server.js",
   "scripts": {
-    "start": "browserify -d -t [reactify] ./src/app.js --exclude react --exclude react-dom   > ./dist/bundle.js && node server.js",
-    "build-bundle": "browserify -t [reactify] -t [browserify-shim] ./src/app.js -x react -x react-dom -x flux -x lodash | uglifyjs -cm > ./dist/bundle.min.js",
-    "build-libraries": "browserify -r react -r react-dom -r lodash -r flux | uglifyjs -cm > ./dist/libs.min.js",
+    "start": "browserify -d -t [reactify] ./src/app.js  > ./dist/bundle.js && node server.js",
+    "build-bundle": "browserify -t [reactify] -t [browserify-shim] ./src/app.js -x lodash | uglifyjs -cm > ./dist/bundle.min.js",
+    "build-libraries": "browserify -r react -r react-dom -r lodash uglifyjs -cm > ./dist/libs.min.js",
     "build": "npm run build-bundle && npm run build-libraries",
     "watch": "watchify -d -t [reactify] ./src/app.js  -o ./dist/bundle.js",
     "clean": "esformatter -i './src/**/*.js'"
   },
   "author": "Matt Schultz",
   "license": "ISC",
-  "browserify-shim": { "react": "global:React", "react-dom": "global:ReactDOM", "lodash": "global:_", "flux": "global: Flux" },
+    "browserify": {
+    "transform": [ "browserify-shim" ]
+  },
+  "browserify-shim": { "react": "global:React", "react-dom": "global:ReactDOM", "lodash": "global:_"},
   "dependencies": {
     "bootstrap": "^3.3.7",
     "browser": "^0.2.6",
