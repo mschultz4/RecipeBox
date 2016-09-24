@@ -17,6 +17,8 @@
   "author": "Matt Schultz",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^0.8.7",
+    "body-parser": "^1.15.2",
     "bootstrap": "^3.3.7",
     "browser": "^0.2.6",
     "express": "^4.14.0",
