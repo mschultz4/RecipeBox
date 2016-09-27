@@ -1,11 +1,7 @@
 var express = require('express');
 
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 const saltRounds = 10;
-
-
-
-
 
 var bodyParser = require('body-parser');
 var app = express();
