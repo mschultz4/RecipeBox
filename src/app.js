@@ -1,10 +1,10 @@
+"use strict";
+
 var ReactDOM = require('react-dom');
 var React = require('react');
 var RecipeBox = require('./components/recipeBox.js');
 var ExampleData = require('./ExampleData.js');
 var Actions = require('./flux/actions.js');
-
-"use strict";
 
 ExampleData.init();
 Actions.receiveAllRecipes();

@@ -1,6 +1,6 @@
 var _ = require('lodash');
 
-var dataAccessLayer = {
+var localStorageAccess = {
     getAllRecipes: function() {
         return JSON.parse(window.localStorage.getItem('recipes'));
     },
@@ -36,5 +36,13 @@ var dataAccessLayer = {
         return newRecipe;
     }
 };
+
+let dataAccessLayer = {
+    createRecipe
+};
+
+function createRecipe(recipe, user){
+    
+}
 
 module.exports = dataAccessLayer;
