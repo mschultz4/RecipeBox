@@ -16,7 +16,7 @@ MongoClient.connect(url, function(err, db) {
   userCollection = db.collection('users'); 
 });
 
-app.use(express.static('./dist'));
+//app.use(express.static('./dist'));
 app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -32,24 +32,49 @@ app.get('/api/data', function (req, res) {
 
 
 app.post('/api/signup', function (req, res) {
-
-  bcrypt.genSalt(saltRounds, function(err, salt) {
-    assert.equal(null, err);
-    bcrypt.hash(req.body.password, salt, function(err, hash) {
+    userCollection.findOne({"email": req.body.email}).then(function(user){
+      if (user){
+          return res.json({"message": "user already exists"});
+      }
+      
+    bcrypt.genSalt(saltRounds, function(err, salt) {
       assert.equal(null, err);
-      var user = {
-        email: req.body.email,
-        password: hash
-      };
-      
-      userCollection.insertOne({email: req.body.email, password: hash});
-      
-      return res.json({
-        message: "user created",
-        data: user
+      bcrypt.hash(req.body.password, salt, function(err, hash) {
+        assert.equal(null, err);
+        var user = {
+          email: req.body.email,
+          password: hash
+        };
+        
+        userCollection.insertOne({email: req.body.email, password: hash});
+        
+        return res.json({
+          message: "user created",
+          authenticated: true,
+          data: user
+        });
       });
     });
+      
+    });
+
+});
+
+app.post('/api/signin', function(req, res){
+  userCollection.findOne({email: req.body.email}).then(function(user){
+    if (!user) {
+      return res.json({
+        message: "user not found",
+        authenticated: false
+      });
+    }
+    
+    bcrypt.compare(req.body.password, user.password, function(err, authenticated){
+        assert.equal(err, null);
+        return res.json({authenticated: authenticated});
+    });
   });
+  
 });
 
 app.listen(port, function () {
