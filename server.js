@@ -1,9 +1,10 @@
-var express     = require('express'),
+"use strict";
+
+let app         = require('express')(),
     MongoClient = require('mongodb').MongoClient, 
     assert      = require('assert'),
     bcrypt      = require('bcryptjs'),
     bodyParser  = require('body-parser'),
-    app         = express(),
     userCollection;
 
 const saltRounds = 10,
@@ -30,34 +31,33 @@ app.get('/api/data', function (req, res) {
   });
 });
 
-
 app.post('/api/signup', function (req, res) {
-    userCollection.findOne({"email": req.body.email}).then(function(user){
-      if (user){
-          return res.json({"message": "user already exists"});
-      }
-      
-    bcrypt.genSalt(saltRounds, function(err, salt) {
-      assert.equal(null, err);
-      bcrypt.hash(req.body.password, salt, function(err, hash) {
+    userCollection
+      .findOne({"email": req.body.email})
+      .then(function(user){
+        if (user){
+            return res.json({"message": "user already exists"});
+        }
+        
+      bcrypt.genSalt(saltRounds, function(err, salt) {
         assert.equal(null, err);
-        var user = {
-          email: req.body.email,
-          password: hash
-        };
-        
-        userCollection.insertOne({email: req.body.email, password: hash});
-        
-        return res.json({
-          message: "user created",
-          authenticated: true,
-          data: user
+        bcrypt.hash(req.body.password, salt, function(err, hash) {
+          assert.equal(null, err);
+          var user = {
+            email: req.body.email,
+            password: hash
+          };
+          
+          userCollection.insertOne({email: req.body.email, password: hash});
+          
+          return res.json({
+            message: "user created",
+            authenticated: true,
+            data: user
+          });
         });
       });
     });
-      
-    });
-
 });
 
 app.post('/api/signin', function(req, res){
@@ -77,8 +77,29 @@ app.post('/api/signin', function(req, res){
   
 });
 
+app.get('api/recipes', function(req, res){
+    let user = req.body.user;
+    
+    userCollection
+      .find({email: user.email}, {recipes: 1})
+      .then(function(recipes){
+        res.json(recipes);
+      });
+});
+
+
+app.post('api/recipes', function(req, res){
+    let user = req.body.user;
+    
+    userCollection
+      .find({email: user.email}, {recipes: 1})
+      .then(function(recipes){
+        res.json(recipes);
+      });
+});
+
 app.listen(port, function () {
-  console.log('Example app listening on port 5000!');
+  console.log('Example app listening on port ' + port + '!');
 });
 
 

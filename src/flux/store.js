@@ -1,16 +1,16 @@
-var Dispatcher = require('./dispatcher.js');
-var EventEmitter = require('events').EventEmitter;
-var Constants = require('./constants.js');
-var Assign = require('object-assign');
-var _ = require('lodash');
+let Dispatcher   = require('./dispatcher.js'),
+    EventEmitter = require('events').EventEmitter,
+    Constants    = require('./constants.js'),
+    Assign       = require('object-assign'),
+    _            = require('lodash');
 
-var CHANGE_EVENT = 'change';
+let CHANGE_EVENT = 'change';
 
 //bootstrap storage if none exists
   
-var _recipes = [];
+let _recipes = [];
  
-var recipeStore = Assign({}, EventEmitter.prototype,{
+let recipeStore = Assign({}, EventEmitter.prototype,{
     /**
    * Get all recipes
    * @return {object}
@@ -96,7 +96,6 @@ function destroy(id){
        return o.id == id;
    }); 
      _recipes.splice(index, 1);
-     
 }
 
 /**

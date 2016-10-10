@@ -1,11 +1,11 @@
-var React = require('react');
-var Recipe = require('./recipe.js');
-var Store = require('../flux/store.js');
-var Actions = require('../flux/actions.js');
-var Button = require('react-bootstrap').Button;
-var Modal = require('./modal.js');
-var ListGroup = require('react-bootstrap').ListGroup;
-var Jumbotron = require('react-bootstrap').Jumbotron;
+var React     = require('react'),
+    Recipe    = require('./recipe.js'),
+    Store     = require('../flux/store.js'),
+    Actions   = require('../flux/actions.js'),
+    Button    = require('react-bootstrap').Button,
+    Modal     = require('./modal.js'),
+    ListGroup = require('react-bootstrap').ListGroup,
+    Jumbotron = require('react-bootstrap').Jumbotron;
 
 var RecipeBox = React.createClass({
     getInitialState: function() {

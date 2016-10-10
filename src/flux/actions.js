@@ -1,7 +1,7 @@
-var WebAPIUtils = require('./WebAPIUtils.js');
-var Dispatcher = require('./dispatcher.js');
-var Constants = require('./constants.js');
-var Assign = require('object-assign');
+var WebAPIUtils = require('./WebAPIUtils.js'),
+    Dispatcher  = require('./dispatcher.js'),
+    Constants   = require('./constants.js'),
+    Assign      = require('object-assign');
 
 var actions = {
     receiveAllRecipes: function() {

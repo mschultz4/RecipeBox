@@ -8,9 +8,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "startdb": "mongod --smallfiles",
     "build": "webpack --devtool source-map",
     "build-prod": "webpack --optimize-minimize",
-    "xwatch": "watchify -d -t [reactify] ./src/app.js  -o ./dist/bundle.js",
     "dev": "webpack -w -d --devtool eval",
     "clean": "esformatter -i './src/**/*.js'"
   },
