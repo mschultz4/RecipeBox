@@ -5,7 +5,8 @@ let app         = require('express')(),
     assert      = require('assert'),
     bcrypt      = require('bcryptjs'),
     bodyParser  = require('body-parser'),
-    userCollection;
+    userCollection,
+    recipeCollection;
 
 const saltRounds = 10,
       port       = process.env.PORT || 5000,
@@ -15,6 +16,7 @@ const saltRounds = 10,
 MongoClient.connect(url, function(err, db) {
   assert.equal(null, err);
   userCollection = db.collection('users'); 
+  recipeCollection = db.collection('recipes');
 });
 
 //app.use(express.static('./dist'));
@@ -77,24 +79,25 @@ app.post('/api/signin', function(req, res){
   
 });
 
-app.get('api/recipes', function(req, res){
-    let user = req.body.user;
-    
-    userCollection
-      .find({email: user.email}, {recipes: 1})
-      .then(function(recipes){
-        res.json(recipes);
+app.get('/api/recipes/:creator_id', function(req, res){
+    recipeCollection
+      .find({}, {creator_id: req.params.creator_id}, function(err, recipes){
+        assert.equal(err, null);
+        res.json(recipes.toArray());
       });
 });
 
-
-app.post('api/recipes', function(req, res){
-    let user = req.body.user;
-    
-    userCollection
-      .find({email: user.email}, {recipes: 1})
-      .then(function(recipes){
-        res.json(recipes);
+app.post('/api/recipes', function(req, res){
+    recipeCollection
+      .insertOne({
+        creator_id: req.body.creator_id,
+        recipe : req.body.recipe
+      })
+      .then(function(document){
+        res.json({
+          "message": "recipe created",
+          "document": document
+        });
       });
 });
 
