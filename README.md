@@ -7,4 +7,4 @@ Built with:
 - Webpack for builds
 - Tape for testing
 - Express for web serving
-- Rethinkdb for persistent storage
+- mongodb for persistent storage
