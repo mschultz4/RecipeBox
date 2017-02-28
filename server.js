@@ -1,15 +1,17 @@
 "use strict";
 
-let app         = require('express')(),
+let express     = require('express'),
+    app         = express(),
     MongoClient = require('mongodb').MongoClient, 
     assert      = require('assert'),
     bcrypt      = require('bcryptjs'),
     bodyParser  = require('body-parser'),
+    path        = require('path'),
     userCollection,
     recipeCollection;
 
 const saltRounds = 10,
-      port       = process.env.PORT || 5000,
+      port       = process.env.PORT || 443,
       ip         = process.env.ip,
       url        = 'mongodb://localhost:27017/recipes';
 
@@ -22,6 +24,7 @@ MongoClient.connect(url, function(err, db) {
 //app.use(express.static('./dist'));
 app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "dist")));
 
 app.get('/', function (req, res) {
   res.render('./dist/index.html');
