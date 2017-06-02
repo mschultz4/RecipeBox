@@ -1,16 +1,21 @@
-import React from 'react'
-import { BrowserRouter as Router, Route, browserHistory, Link } from 'react-router-dom'
-import VisibleRecipes from './VisibleRecipes'
-import AddRecipe from './AddRecipe'
-import Navbar from './Navbar'
+import React from "react";
+import { Route } from "react-router-dom";
+import Navbar from "./Navbar";
+import AddRecipe from "./AddRecipe.js";
+import Recipes from "./Recipes.js";
+import Login from "./Login.js";
+import Recipe from "./Recipe.js";
 
-const App = () => (
-    <div className='container'>
-        <Navbar />
-        <Route exact path="/" component={VisibleRecipes} />
-        <Route path="/New" component={AddRecipe} />
-        <Route path="/Login" component={AddRecipe} />
+const App = ( {match} ) => {
+  return (
+    <div className="container">
+      <Navbar />
+      <Route exact path="/" component={Login} />
+      <Route path="/new" component={AddRecipe} />
+      <Route path="/Recipes" component={Recipes} />
+      <Route path="/recipes/:id" component={Recipe} />
     </div>
-)
+  );
+};
 
-export default App
+export default App;

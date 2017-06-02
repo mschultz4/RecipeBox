@@ -1,33 +1,52 @@
-import React from 'react'
+import React from 'react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
+import { deleteRecipe } from '../actions/actions.js';
 
-const Recipe = ({ title, ingredients, instructions, notes, favorite }) => {
-    let ing;
-    if (ingredients) {
-        ing = ingredients.map((ing, index) => (<span key={index}>{ing.title + ' '}</span>))
-    }
-    else {
-        ing = "No ingredients"
-    }
+const mapStateToProps = (state, ownProps) => {
+	const found = _.find(state.recipes, { id: parseInt(ownProps.match.params.id, 10) });
 
-    let instructionsElement = instructions ?
-        instructions.map((ins, index) => (<span key={index}>{ins.title + ' '}</span>))
-        : "No instructions";
+	return ({
+		recipe: found,
+	});
+};
 
-return (
-    <li >
-        <dl className='row'>
-            <dt className='col-sm-3'>Title</dt>
-            <dd className='col-sm-9'>{title}</dd>
-            <dt className='col-sm-3'>Ingredients</dt>
-            <dd className='col-sm-9'>{ing}</dd>
-            <dt className='col-sm-3'>Instructions</dt>
-            <dd className='col-sm-9'>{instructionsElement}</dd>
-            <dt className='col-sm-3'>Favorite</dt>
-            <dd className='col-sm-9'>{favorite ? 'true' : 'false'}</dd>
-            <dt className='col-sm-3'>Notes</dt>
-            <dd className='col-sm-9'>{notes}</dd>
-        </dl>
-    </li>
-)};
+const mapDispatchToProps = (dispatch) => {
+	return {
+		onDeleteRecipe : id => dispatch(deleteRecipe(id))
+	}
+};
 
-export default Recipe
+const Recipe = ({ recipe, onDeleteRecipe }) => {
+	const ingredientsElement = recipe.ingredients ?
+        recipe.ingredients.map((ing, index) => (<li key={index}>{ing.ingredient}</li>))
+        : 'No ingredients';
+
+	const instructionsElement = recipe.instructions ?
+        recipe.instructions.map((ins, index) => (<li key={index}>{ins.instruction}</li>))
+        : 'No instructions';
+
+	return (
+  <div>
+    <h4>{recipe.title}</h4>
+    <p className="lead">{recipe.notes}</p>
+    <div className="row">
+      <div className="col-sm-3">
+        <h5 >Ingredients</h5>
+        <ol>{ingredientsElement}</ol>
+      </div>
+      <div className="col-sm-9">
+        <h5 className="card-title">Instructions</h5>
+        <ol>{instructionsElement}</ol>
+      </div>
+    </div>
+    <h5>Favorite</h5>
+    <p>{recipe.favorite ? 'true' : 'false'}</p>
+    <h5>Notes</h5>
+    <p>{recipe.notes}</p>
+    <button className="btn btn-secondary" onClick={() => onDeleteRecipe(recipe.id)}>Delete</button>
+  </div>
+	);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Recipe);

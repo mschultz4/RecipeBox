@@ -1,17 +1,21 @@
-let insertRecipe = 
+const insertRecipe =
     `INSERT INTO recipes (title, notes, favorite) 
     VALUES ($[title], $[notes], $[favorite]) 
     RETURNING recipeid`;
 
-let insertIngredient = 
+const insertIngredient =
     `INSERT INTO ingredients (recipeid, ingredient, sequence) 
     VALUES ($[recipeid], $[ingredient], $[sequence])`;
 
-let insertInstruction = 
+const insertInstruction =
     `INSERT INTO instructions (recipeid, instruction, sequence) 
     VALUES ($[recipeid], $[instruction], $[sequence])`;
 
-let selectRecipes = 
+const deleteRecipe = 
+    `DELETE FROM recipes
+     WHERE recipeid = $1`;
+
+const selectRecipes =
     `SELECT json_agg ( json_build_object 
         ( 'id', recipes.recipeid
         , 'title', recipes.title
@@ -38,10 +42,11 @@ let selectRecipes =
         )
     ) as recipes
     FROM recipes`;
-    
-module.exports = { 
-    insertRecipe,
-    insertIngredient,
-    insertInstruction,
-    selectRecipes
+
+module.exports = {
+  insertRecipe,
+  insertIngredient,
+  insertInstruction,
+  selectRecipes,
+  deleteRecipe,
 };

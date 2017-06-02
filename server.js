@@ -1,130 +1,133 @@
-"use strict";
+import express from "express";
+import pgp from "pg-promise";
+import assert from "assert";
+import bcrypt from "bcryptjs";
+import bodyParser from "body-parser";
+import path from "path";
+import queries from "./server/queries.js";
+import session from "express-session";
 
-let express    = require('express');
-let app        = express();
-let pgp        = require('pg-promise')();
-let assert     = require('assert');
-let bcrypt     = require('bcryptjs');
-let bodyParser = require('body-parser');
-let path       = require('path');
-let queries    = require("./server/queries.js");
+// Authorization
+import configAuth from "./config/auth.js";
+import passport from "passport";
+import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
+import flash from "connect-flash";
 
+const app = express();
 const saltRounds = 10;
-const port       = 8080;
-const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/recipebox';
-
-let cn = {
-    host: "localhost",
-    port: 5432,
-    database: 'recipebox',
-    pools: 10,
-    user: 'mschultz'
+const port = 8080;
+const cn = {
+  host: "localhost",
+  port: 5432,
+  database: "recipebox",
+  pools: 10,
+  user: "mschultz"
 };
+const db = pgp()(process.env.DATABASE_URL || cn);
 
-const db = pgp(cn);
-
-//app.use(express.static('./dist'));
+// Middleware
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "dist")));
 
-app.get('/', function (req, res) {
-  res.render('./dist/index.html');
+// Passport Authorization
+app.use(session({ secret: "strawberry fields forever", resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: configAuth.googleAuth.clientID,
+      clientSecret: configAuth.googleAuth.clientSecret,
+      callbackURL: configAuth.googleAuth.callbackURL
+    },
+    (token, refreshToken, profile, done) => {
+      return done(null, profile);
+    }
+  )
+);
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser((id, done) => {
+  done(null, { id: id, name: "hardcoded user" });
 });
 
-app.post('/api/saverecipe', function (req, res) {
-  db.tx(t => {
-      return t.one(queries.insertRecipe, req.body)
-          .then(data => {
-            let ingredientsQueries = req.body.ingredients.map(ing => {
-              return t.none(queries.insertIngredient, Object.assign({}, {recipeid: data.recipeid}, ing));
-            });
+// Routes
+app.get("/", (req, res) => {
+  res.render("./dist/index.html");
+});
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["email", "profile"] })
+);
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/", failureFlash: true }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    console.log("success");
+    res.redirect("/");
+  }
+);
+app.post("/api/saverecipe", (req, res) => {
+  db
+    .tx(t =>
+      t.one(queries.insertRecipe, req.body).then(data => {
+        const ingredientsQueries = req.body.ingredients.map(ing =>
+          t.none(
+            queries.insertIngredient,
+            Object.assign({}, { recipeid: data.recipeid }, ing)
+          )
+        );
+        const instructionsQueries = req.body.instructions.map(ins =>
+          t.none(
+            queries.insertInstruction,
+            Object.assign({}, { recipeid: data.recipeid }, ins)
+          )
+        );
 
-            let instructionsQueries = req.body.instructions.map(ins => {
-              return t.none(queries.insertInstruction, Object.assign({}, {recipeid: data.recipeid}, ins));
-            });
-            console.log(req.body);
-              
-            return t.batch([].concat(ingredientsQueries, instructionsQueries));
-          });
-  })
-  .then(events => {
+        return t.batch([].concat(ingredientsQueries, instructionsQueries));
+      })
+    )
+    .then(events => {
       console.log(events);
-  })
-  .catch(error => {
+    })
+    .catch(error => {
       console.log(error);
       // error
-  });
+    });
 
   return res.json(req.body);
 });
 
-app.get('/api/recipes/', function(req, res){
-  var recipes;
-  db.one(queries.selectRecipes)
-  .then(data => {
-      return res.json(data);
-  })
-  .catch(error => {
-      console.log(error);
-  });
+app.post("/recipes/deleterecipe", (req, res) => {
+  db
+    .none(queries.deleteRecipe, [req.body.recipeId])
+    .then(events => console.log(events))
+    .catch(error => console.log(error));
 
+  return res.json(req.body);
 });
 
-app.post('/api/signup', function (req, res) {
-    userCollection
-      .findOne({"email": req.body.email})
-      .then(function(user){
-        if (user){
-            return res.json({"message": "user already exists"});
-        }
-
-      bcrypt.genSalt(saltRounds, function(err, salt) {
-        assert.equal(null, err);
-        bcrypt.hash(req.body.password, salt, function(err, hash) {
-          assert.equal(null, err);
-          var user = {
-            email: req.body.email,
-            password: hash
-          };
-
-          userCollection.insertOne({email: req.body.email, password: hash});
-
-          return res.json({
-            message: "user created",
-            authenticated: true,
-            data: user
-          });
-        });
-      });
-    });
+app.get("/api/recipes/", (req, res) => {
+  db
+    .one(queries.selectRecipes)
+    .then(data => res.json(data))
+    .catch(error => console.log(error));
 });
 
-app.post('/api/signin', function(req, res){
-  userCollection.findOne({email: req.body.email}).then(function(user){
-    if (!user) {
-      return res.json({
-        message: "user not found",
-        authenticated: false
-      });
-    }
-
-    bcrypt.compare(req.body.password, user.password, function(err, authenticated){
-        assert.equal(err, null);
-        return res.json({authenticated: authenticated});
-    });
-  });
-
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}!`);
 });
 
-app.get('/api/recipes/:creator_id', function(req, res){
-    recipeCollection
-      .find({}, {creator_id: req.params.creator_id}, function(err, recipes){
-        assert.equal(err, null);
-        res.json(recipes.toArray());
-      });
-});
+// route middleware to make sure a user is logged in
+function isAuthenticated(req, res, next) {
 
-app.listen(port, function () {
-  console.log('Example app listening on port ' + port + '!');
-});
+    // if user is authenticated in the session, carry on
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.redirect('/api/login');
+}

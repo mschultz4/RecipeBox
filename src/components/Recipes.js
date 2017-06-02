@@ -1,18 +1,20 @@
-import React from 'react'
-import Recipe from './Recipe'
+import React from 'react';
+import RecipeCard from './RecipeCard';
+import { connect } from 'react-redux';
+
+const mapStateToProps = state => ({recipes: state.recipes});
 
 const Recipes = ({ recipes }) => (
-    <div>
-        <ul>
-        {recipes.map(recipe => (
-            <Recipe
-                key={recipe.id}
-                {...recipe}
-            />)
-        )}
+  <div>
+    <ul className="list-group">
+      {recipes.map(recipe => (
+        <RecipeCard
+          key={recipe.id}
+          {...recipe}
+        />)
+         )}
     </ul>
-    </div>
+  </div>
 );
 
-export default Recipes
-
+export default connect(mapStateToProps)(Recipes);

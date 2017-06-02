@@ -1,7 +1,8 @@
-import { combineReducers } from 'redux'
-import recipes from './recipes'
-import fetchStatus from './fetchStatus'
+import { combineReducers } from 'redux';
+import recipes from './recipes';
+import fetchStatus from './fetchStatus';
+import auth from './auth';
 
-const recipeApp = combineReducers({recipes, fetchStatus});
+const recipeApp = combineReducers({ recipes, fetchStatus, auth });
 
-export default recipeApp
+export default recipeApp;
