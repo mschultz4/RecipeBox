@@ -2,9 +2,9 @@ const path = require("path");
 const fs = require("fs");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 
-// Front End Configuration
+//  Client Configuration
 const client = {
-  entry: [path.resolve(__dirname, "./src/index.js")],
+  entry: [path.resolve(__dirname, "./src/client/index.js")],
   output: {
     path: path.join(__dirname, "dist"),
     filename: "bundle.js"
@@ -32,21 +32,21 @@ const client = {
       }
     ]
   },
-  plugins: [
-    new htmlWebpackPlugin({
-      template: path.resolve(__dirname, "src/index.html"),
-      inject: "body",
-      filename: "index.html"
-    })
-  ]
+  // plugins: [
+  //   new htmlWebpackPlugin({
+  //     template: path.resolve(__dirname, "src/client/index.html"),
+  //     inject: "body",
+  //     filename: "index.html"
+  //   })
+  // ]
 };
 
 // Node Configuration
 const server = {
-  entry: path.resolve(__dirname, "server.js"),
+  entry: path.resolve(__dirname, "./src/server/server.js"),
 
   output: {
-    filename: "./dist/server.bundle.js"
+    filename: "./server.bundle.js"
   },
 
   target: "node",
@@ -70,7 +70,11 @@ const server = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: "babel-loader?presets[]=es2015&presets[]=react"
+        loader: "babel-loader",
+        query: {
+          presets: ["es2015", "react"],
+          plugins: ["transform-object-rest-spread"]
+        }
       }
     ]
   }

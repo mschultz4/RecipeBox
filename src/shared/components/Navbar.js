@@ -14,7 +14,7 @@ const Navbar = () => (
     >
       <span className="navbar-toggler-icon" />
     </button>
-    <a className="navbar-brand" href="#">Brands</a>
+    <a className="navbar-brand" href="#">Test</a>
     <div className="collapse navbar-collapse" id="navbar-content">
       <ul className="navbar-nav mr-auto">
         <li className="nav-item active">

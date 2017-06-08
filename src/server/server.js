@@ -4,11 +4,13 @@ import assert from "assert";
 import bcrypt from "bcryptjs";
 import bodyParser from "body-parser";
 import path from "path";
-import queries from "./server/queries.js";
+import queries from "./queries.js";
 import session from "express-session";
+import dbConfig from "../../config/db.config.js"
+import render from "./render.js"
 
 // Authorization
-import configAuth from "./config/auth.js";
+import configAuth from "../../config/auth.config.js";
 import passport from "passport";
 import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
 import flash from "connect-flash";
@@ -16,22 +18,21 @@ import flash from "connect-flash";
 const app = express();
 const saltRounds = 10;
 const port = 8080;
-const cn = {
-  host: "localhost",
-  port: 5432,
-  database: "recipebox",
-  pools: 10,
-  user: "mschultz"
-};
-const db = pgp()(process.env.DATABASE_URL || cn);
+const db = pgp()(process.env.DATABASE_URL || dbConfig);
 
 // Middleware
+app.use("/static", express.static(path.join(__dirname, "../../dist")));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "dist")));
 
 // Passport Authorization
-app.use(session({ secret: "strawberry fields forever", resave: false, saveUninitialized: false }));
+app.use(
+  session({
+    secret: "strawberry fields forever",
+    resave: false,
+    saveUninitialized: false
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -48,15 +49,14 @@ passport.use(
     }
   )
 );
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser((id, done) => {
-  done(null, { id: id, name: "hardcoded user" });
+passport.serializeUser((user, done) => {
+  done(null, {id: user.id, displayName: user.displayName});
+})
+passport.deserializeUser((user, done) => {
+  done(null, user);
 });
 
 // Routes
-app.get("/", (req, res) => {
-  res.render("./dist/index.html");
-});
 app.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["email", "profile"] })
@@ -66,7 +66,7 @@ app.get(
   passport.authenticate("google", { failureRedirect: "/", failureFlash: true }),
   function(req, res) {
     // Successful authentication, redirect home.
-    console.log("success");
+    console.log(req.isAuthenticated());
     res.redirect("/");
   }
 );
@@ -117,17 +117,30 @@ app.get("/api/recipes/", (req, res) => {
     .catch(error => console.log(error));
 });
 
+app.get("/api/user/", (req, res) => {
+  return res.json(req.user);
+});
+
+// app.get("*", (req, res) => {
+//   res.render("./dist/index.html");
+// });
+
+app.get("/", (req, res) => {
+  render(req.url, db, res);
+});
+
+// app.get("*", handleRender);
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
 });
 
 // route middleware to make sure a user is logged in
 function isAuthenticated(req, res, next) {
+  // if user is authenticated in the session, carry on
+  if (req.isAuthenticated()) return next();
 
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.redirect('/api/login');
+  // if they aren't redirect them to the home page
+  res.redirect("/");
 }
+

@@ -71,27 +71,7 @@
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _Recipes = __webpack_require__(275);
-
-	var _Recipes2 = _interopRequireDefault(_Recipes);
-
-	var _Navbar = __webpack_require__(264);
-
-	var _Navbar2 = _interopRequireDefault(_Navbar);
-
-	var _AddRecipe = __webpack_require__(265);
-
-	var _AddRecipe2 = _interopRequireDefault(_AddRecipe);
-
-	var _Login = __webpack_require__(268);
-
-	var _Login2 = _interopRequireDefault(_Login);
-
-	var _Recipe = __webpack_require__(269);
-
-	var _Recipe2 = _interopRequireDefault(_Recipe);
-
-	var _root = __webpack_require__(271);
+	var _root = __webpack_require__(273);
 
 	var _root2 = _interopRequireDefault(_root);
 
@@ -101,8 +81,17 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var store = (0, _redux.createStore)(_root2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default));
-	store.dispatch((0, _actions.getAllRecipes)());
+	// Grab the state from a global variable injected into the server-generated HTML
+	var preloadedState = window.__PRELOADED_STATE__;
+
+	// Allow the passed state to be garbage-collected
+	delete window.__PRELOADED_STATE__;
+
+	// Create Redux store with initial state
+	var store = (0, _redux.createStore)(_root2.default, preloadedState, (0, _redux.applyMiddleware)(_reduxThunk2.default));
+
+	// const store = createStore(rootReducer,  applyMiddleware(thunk));
+	// store.dispatch(getAllRecipes());
 
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -24429,15 +24418,15 @@
 
 	var _AddRecipe2 = _interopRequireDefault(_AddRecipe);
 
-	var _Recipes = __webpack_require__(275);
+	var _Recipes = __webpack_require__(268);
 
 	var _Recipes2 = _interopRequireDefault(_Recipes);
 
-	var _Login = __webpack_require__(268);
+	var _Login = __webpack_require__(270);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
-	var _Recipe = __webpack_require__(269);
+	var _Recipe = __webpack_require__(271);
 
 	var _Recipe2 = _interopRequireDefault(_Recipe);
 
@@ -24450,10 +24439,14 @@
 	    "div",
 	    { className: "container" },
 	    _react2.default.createElement(_Navbar2.default, null),
-	    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/", component: _Login2.default }),
-	    _react2.default.createElement(_reactRouterDom.Route, { path: "/new", component: _AddRecipe2.default }),
-	    _react2.default.createElement(_reactRouterDom.Route, { path: "/Recipes", component: _Recipes2.default }),
-	    _react2.default.createElement(_reactRouterDom.Route, { path: "/recipes/:id", component: _Recipe2.default })
+	    _react2.default.createElement(
+	      _reactRouterDom.Switch,
+	      null,
+	      _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: "/", component: _Login2.default }),
+	      _react2.default.createElement(_reactRouterDom.Route, { path: "/new", component: _AddRecipe2.default }),
+	      _react2.default.createElement(_reactRouterDom.Route, { path: "/Recipes", component: _Recipes2.default }),
+	      _react2.default.createElement(_reactRouterDom.Route, { path: "/recipes/:id", component: _Recipe2.default })
+	    )
 	  );
 	};
 
@@ -27758,7 +27751,7 @@
 	    _react2.default.createElement(
 	      "a",
 	      { className: "navbar-brand", href: "#" },
-	      "Brands"
+	      "Test"
 	    ),
 	    _react2.default.createElement(
 	      "div",
@@ -28118,83 +28111,84 @@
 /* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
-	exports.deleteRecipe = exports.getAllRecipes = exports.saveRecipe = undefined;
+	exports.deleteRecipe = exports.getAllRecipes = exports.saveRecipe = exports.receivedAll = undefined;
 
 	__webpack_require__(267);
 
 	var hasErrored = function hasErrored(bool) {
-		return { type: 'HAS_ERRORED', hasErrored: bool };
+	  return { type: "HAS_ERRORED", hasErrored: bool };
 	};
 	var isLoading = function isLoading(bool) {
-		return { type: 'IS_LOADING', isLoading: bool };
-	};
-	var receivedAll = function receivedAll(data) {
-		return { type: 'RECEIVED_ALL', recipes: data };
+	  return { type: "IS_LOADING", isLoading: bool };
 	};
 	var addRecipe = function addRecipe(recipe) {
-		return { type: 'ADD_RECIPE', recipe: recipe };
+	  return { type: "ADD_RECIPE", recipe: recipe };
 	};
 	var destroyRecipe = function destroyRecipe(recipeid) {
-		return { type: 'DESTROY_RECIPE', recipeid: recipeid };
+	  return { type: "DESTROY_RECIPE", recipeid: recipeid };
+	};
+
+	var receivedAll = exports.receivedAll = function receivedAll(data) {
+	  return { type: "RECEIVED_ALL", recipes: data };
 	};
 
 	var saveRecipe = exports.saveRecipe = function saveRecipe(recipe) {
-		return function (dispatch) {
-			dispatch(isLoading(true));
+	  return function (dispatch) {
+	    dispatch(isLoading(true));
 
-			fetch('api/saverecipe', {
-				method: 'post',
-				headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-				body: JSON.stringify(recipe)
-			}).then(function (res) {
-				if (!res.ok) throw Error(res.statusText);
+	    fetch("api/saverecipe", {
+	      method: "post",
+	      headers: { "Content-Type": "application/json", Accept: "application/json" },
+	      body: JSON.stringify(recipe)
+	    }).then(function (res) {
+	      if (!res.ok) throw Error(res.statusText);
 
-				dispatch(isLoading(false));
-				return res.json();
-			}).then(function (data) {
-				recipe.id = data.recipeid;
-				dispatch(addRecipe(recipe));
-			}).catch(function () {
-				return hasErrored(true);
-			});
-		};
+	      dispatch(isLoading(false));
+	      return res.json();
+	    }).then(function (data) {
+	      recipe.id = data.recipeid;
+	      dispatch(addRecipe(recipe));
+	    }).catch(function () {
+	      return hasErrored(true);
+	    });
+	  };
 	};
 
 	var getAllRecipes = exports.getAllRecipes = function getAllRecipes() {
-		return function (dispatch) {
-			dispatch(isLoading(true));
+	  return function (dispatch) {
+	    dispatch(isLoading(true));
 
-			fetch('api/recipes').then(function (res) {
-				if (!res.ok) throw Error(res.statusText);
+	    fetch("api/recipes").then(function (res) {
+	      if (!res.ok) throw Error(res.statusText);
 
-				dispatch(isLoading(false));
-				return res.json();
-			}).then(function (data) {
-				return dispatch(receivedAll(data.recipes));
-			}).catch(function () {
-				return hasErrored(true);
-			});
-		};
+	      dispatch(isLoading(false));
+	      return res.json();
+	    }).then(function (data) {
+	      return dispatch(receivedAll(data.recipes));
+	    }).catch(function () {
+	      return hasErrored(true);
+	    });
+	  };
 	};
 
 	var deleteRecipe = exports.deleteRecipe = function deleteRecipe(id) {
-		return function (dispatch) {
-			console.log(JSON.stringify(id));
-			fetch('deleterecipe', {
-				method: 'post',
-				headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-				body: JSON.stringify({ recipeId: id })
-			}).then(function () {
-				return dispatch(destroyRecipe(id));
-			}).catch(function () {
-				return hasErrored(true);
-			});
-		};
+	  return function (dispatch) {
+	    console.log(JSON.stringify(id));
+	    fetch("deleterecipe", {
+	      method: "post",
+	      headers: { "Content-Type": "application/json", Accept: "application/json" },
+	      body: JSON.stringify({ recipeId: id })
+	    }).then(function () {
+	      return dispatch(destroyRecipe(id));
+	    }).catch(function () {
+	      return hasErrored(true);
+	    });
+	  };
 	};
 
 /***/ }),
@@ -28668,6 +28662,105 @@
 /* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _RecipeCard = __webpack_require__(269);
+
+	var _RecipeCard2 = _interopRequireDefault(_RecipeCard);
+
+	var _reactRedux = __webpack_require__(207);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var mapStateToProps = function mapStateToProps(state) {
+	  return { recipes: state.recipes };
+	};
+
+	var Recipes = function Recipes(_ref) {
+	  var recipes = _ref.recipes;
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(
+	      'ul',
+	      { className: 'list-group' },
+	      recipes.map(function (recipe) {
+	        return _react2.default.createElement(_RecipeCard2.default, _extends({
+	          key: recipe.id
+	        }, recipe));
+	      })
+	    )
+	  );
+	};
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Recipes);
+
+/***/ }),
+/* 269 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouterDom = __webpack_require__(228);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var RecipeCard = function RecipeCard(_ref) {
+	  var title = _ref.title,
+	      id = _ref.id;
+	  return _react2.default.createElement(
+	    'li',
+	    { className: 'list-group-item' },
+	    _react2.default.createElement(
+	      'div',
+	      { className: 'col-sm-8' },
+	      _react2.default.createElement(
+	        'h4',
+	        { className: 'card-title' },
+	        title
+	      ),
+	      _react2.default.createElement(
+	        'p',
+	        { className: 'card-text' },
+	        'Maybe some description'
+	      )
+	    ),
+	    _react2.default.createElement(
+	      'div',
+	      { className: 'col-sm-4' },
+	      _react2.default.createElement(
+	        _reactRouterDom.Link,
+	        { to: '/recipes/' + id, className: 'btn btn-primary' },
+	        'Make it'
+	      )
+	    )
+	  );
+	};
+
+	exports.default = RecipeCard;
+
+/***/ }),
+/* 270 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -28786,7 +28879,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
 
 /***/ }),
-/* 269 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28799,7 +28892,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _lodash = __webpack_require__(270);
+	var _lodash = __webpack_require__(272);
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
@@ -28923,7 +29016,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Recipe);
 
 /***/ }),
-/* 270 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -46014,7 +46107,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(200)(module)))
 
 /***/ }),
-/* 271 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46025,15 +46118,15 @@
 
 	var _redux = __webpack_require__(186);
 
-	var _recipes = __webpack_require__(272);
+	var _recipes = __webpack_require__(274);
 
 	var _recipes2 = _interopRequireDefault(_recipes);
 
-	var _fetchStatus = __webpack_require__(273);
+	var _fetchStatus = __webpack_require__(275);
 
 	var _fetchStatus2 = _interopRequireDefault(_fetchStatus);
 
-	var _auth = __webpack_require__(274);
+	var _auth = __webpack_require__(276);
 
 	var _auth2 = _interopRequireDefault(_auth);
 
@@ -46044,7 +46137,7 @@
 	exports.default = recipeApp;
 
 /***/ }),
-/* 272 */
+/* 274 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -46093,7 +46186,7 @@
 	exports.default = recipes;
 
 /***/ }),
-/* 273 */
+/* 275 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -46117,7 +46210,7 @@
 	};
 
 /***/ }),
-/* 274 */
+/* 276 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -46141,105 +46234,6 @@
 				return state;
 		}
 	};
-
-/***/ }),
-/* 275 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _RecipeCard = __webpack_require__(276);
-
-	var _RecipeCard2 = _interopRequireDefault(_RecipeCard);
-
-	var _reactRedux = __webpack_require__(207);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var mapStateToProps = function mapStateToProps(state) {
-	  return { recipes: state.recipes };
-	};
-
-	var Recipes = function Recipes(_ref) {
-	  var recipes = _ref.recipes;
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    _react2.default.createElement(
-	      'ul',
-	      { className: 'list-group' },
-	      recipes.map(function (recipe) {
-	        return _react2.default.createElement(_RecipeCard2.default, _extends({
-	          key: recipe.id
-	        }, recipe));
-	      })
-	    )
-	  );
-	};
-
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Recipes);
-
-/***/ }),
-/* 276 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRouterDom = __webpack_require__(228);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var RecipeCard = function RecipeCard(_ref) {
-	  var title = _ref.title,
-	      id = _ref.id;
-	  return _react2.default.createElement(
-	    'li',
-	    { className: 'list-group-item' },
-	    _react2.default.createElement(
-	      'div',
-	      { className: 'col-sm-8' },
-	      _react2.default.createElement(
-	        'h4',
-	        { className: 'card-title' },
-	        title
-	      ),
-	      _react2.default.createElement(
-	        'p',
-	        { className: 'card-text' },
-	        'Maybe some description'
-	      )
-	    ),
-	    _react2.default.createElement(
-	      'div',
-	      { className: 'col-sm-4' },
-	      _react2.default.createElement(
-	        _reactRouterDom.Link,
-	        { to: '/recipes/' + id, className: 'btn btn-primary' },
-	        'Make it'
-	      )
-	    )
-	  );
-	};
-
-	exports.default = RecipeCard;
 
 /***/ })
 /******/ ]);
